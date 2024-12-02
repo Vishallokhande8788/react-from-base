@@ -63,7 +63,7 @@
         );
       }
 
-      function Grid() {
+      function Grid({ limit = 1 }) {
         const data = [
           {
             id: 1,
@@ -91,7 +91,7 @@
 
         return (
           <div className="flex flex-wrap gap-4">
-            {data.map((currentObj) => {
+            {data.slice(0, limit).map((currentObj) => {
               return (
                 <div
                   key={currentObj.id}
@@ -118,16 +118,16 @@
               </code>
             </p>
             <Counter />
-            <Grid />
+            <Grid limit={3} />
           </main>
         );
       }
 
       root.render(
-        <React.Fragment>
+        <React.StrictMode>
           <Header>React From Base</Header>
           <Main />
-        </React.Fragment>
+        </React.StrictMode>
       );
     </script>
   </body>

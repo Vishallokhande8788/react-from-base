@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React From Base</title>
+    <!-- Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/hack.min.css"
+    />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Update Font -->
+    <style>
+      body {
+        font-family: "Hack", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Add React -->
+    <script src="https://www.unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <!-- Add ReactDOM -->
+    <script src="https://www.unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <!-- Add Babel -->
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <!-- Custom Script -->
+    <script type="text/babel">
+      const rootEl = document.querySelector("#app");
+      const root = ReactDOM.createRoot(rootEl);
+
+      function Header({ children }) {
+        return (
+          <header className="bg-zinc-100 px-8 py-6 border-b border-zinc-300">
+            <h1 className="text-2xl font-semibold">{children}</h1>
+          </header>
+        );
+      }
+
+      function Main() {
+        return (
+          <main className="px-8 py-6 container">
+            <h2 className="text-xl font-bold mb-3">Why? 🤔</h2>
+            <p>
+              React from base is a project that uses React without any other
+              libraries or build tools. In-fact, it doesn't even have any{" "}
+              <code className="font-monospace bg-zinc-300 rounded p-1">
+                package.json
+              </code>
+            </p>
+          </main>
+        );
+      }
+
+      root.render(
+        <React.Fragment>
+          <Header>React From Base</Header>
+          <Main />
+        </React.Fragment>
+      );
+    </script>
+  </body>
+</html>

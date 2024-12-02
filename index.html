@@ -45,21 +45,24 @@
         let [counter, setCounter] = React.useState(0);
 
         return (
-          <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3">
-            <button
-              className="bg-blue-300 rounded-sm"
-              onClick={() => setCounter((preVal) => preVal - 1)}
-            >
-              -
-            </button>
-            <p>{counter}</p>
-            <button
-              className="bg-blue-300 rounded-sm"
-              onClick={() => setCounter((preVal) => preVal + 1)}
-            >
-              +
-            </button>
-          </div>
+          <React.Fragment>
+            <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3">
+              <button
+                className="bg-blue-300 rounded-sm"
+                onClick={() => setCounter((preVal) => preVal - 1)}
+              >
+                -
+              </button>
+              <p>{counter}</p>
+              <button
+                className="bg-blue-300 rounded-sm"
+                onClick={() => setCounter((preVal) => preVal + 1)}
+              >
+                +
+              </button>
+            </div>
+            <Grid limit={counter} />
+          </React.Fragment>
         );
       }
 
@@ -118,7 +121,7 @@
               </code>
             </p>
             <Counter />
-            <Grid limit={3} />
+            {/* <Grid limit={3} /> */}
           </main>
         );
       }

@@ -45,7 +45,7 @@
         let [counter, setCounter] = React.useState(0);
 
         return (
-          <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg">
+          <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3">
             <button
               className="bg-blue-300 rounded-sm"
               onClick={() => setCounter((preVal) => preVal - 1)}
@@ -89,7 +89,21 @@
           },
         ];
 
-        return <div>Grid Component</div>;
+        return (
+          <div className="flex flex-wrap gap-4">
+            {data.map((currentObj) => {
+              return (
+                <div
+                  key={currentObj.id}
+                  className="border border-zinc-800 rounded-lg p-4 w-48"
+                >
+                  <h2 className="text-2xl font-bold mb-2">{currentObj.name}</h2>
+                  <p>{currentObj.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        );
       }
 
       function Main() {

@@ -33,35 +33,51 @@
       const rootEl = document.querySelector("#app");
       const root = ReactDOM.createRoot(rootEl);
 
-      function Header({ children }) {
+      function Header({ children, bgColor = "light" }) {
+        const backgroundOptions = {
+          light: "bg-zinc-200",
+          blue: "bg-blue-200",
+          green: "bg-green-200",
+          red: "bg-red-200",
+        };
+
         return (
-          <header className="bg-zinc-100 px-8 py-6 border-b border-zinc-300">
+          <header
+            className={`${backgroundOptions[bgColor]} px-8 py-6 border-b`}
+          >
             <h1 className="text-2xl font-semibold">{children}</h1>
           </header>
         );
       }
 
-      function Counter() {
+      function Counter({ handleChange }) {
         let [counter, setCounter] = React.useState(0);
+
+        function handleClick(operation = "+") {
+          if (operation === "+") {
+            setCounter(counter + 1);
+          } else {
+            setCounter(counter - 1);
+          }
+        }
 
         return (
           <React.Fragment>
             <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3">
               <button
                 className="bg-blue-300 rounded-sm"
-                onClick={() => setCounter((preVal) => preVal - 1)}
+                onClick={() => handleClick("-")}
               >
                 -
               </button>
               <p>{counter}</p>
               <button
                 className="bg-blue-300 rounded-sm"
-                onClick={() => setCounter((preVal) => preVal + 1)}
+                onClick={() => handleClick("+")}
               >
                 +
               </button>
             </div>
-            <Grid limit={counter} />
           </React.Fragment>
         );
       }
@@ -94,7 +110,7 @@
 
         return (
           <div className="flex flex-wrap gap-4">
-            {data.slice(0, limit).map((currentObj) => {
+            {data.slice(0, limit < 0 ? 0 : limit).map((currentObj) => {
               return (
                 <div
                   key={currentObj.id}
@@ -110,6 +126,12 @@
       }
 
       function Main() {
+        const [size, setSize] = React.useState(4);
+
+        function handleChange(value) {
+          setSize(value);
+        }
+
         return (
           <main className="px-8 py-6 container">
             <h2 className="text-xl font-bold mb-3">Why? 🤔</h2>
@@ -120,15 +142,15 @@
                 package.json
               </code>
             </p>
-            <Counter />
-            {/* <Grid limit={3} /> */}
+            <Counter handleChange={handleChange} />
+            <Grid limit={size} />
           </main>
         );
       }
 
       root.render(
         <React.StrictMode>
-          <Header>React From Base</Header>
+          <Header bgColor="green">React From Base</Header>
           <Main />
         </React.StrictMode>
       );

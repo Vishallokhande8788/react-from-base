@@ -54,18 +54,10 @@
         let [counter, setCounter] = React.useState(0);
 
         function handleClick(operation = "+") {
-          if (operation === "+") {
-            setCounter((prevValue) => {
-              handleChange(prevValue + 1);
-              return prevValue + 1;
-            });
-
-            return;
-          }
-
-          setCounter((prevValue) => {
-            handleChange(prevValue - 1);
-            return prevValue - 1;
+          setCounter((preValue) => {
+            let newValue = operation === "+" ? preValue + 1 : preValue - 1;
+            handleChange(newValue);
+            return newValue;
           });
         }
 
@@ -92,45 +84,36 @@
       }
 
       function Grid({ limit = 1 }) {
-        const data = [
-          {
-            id: 1,
-            name: "React",
-            description: "A JavaScript library for building user interfaces",
-          },
-          {
-            id: 2,
-            name: "Angular",
-            description:
-              "A TypeScript-based open-source front-end web framework",
-          },
-          {
-            id: 3,
-            name: "Vue",
-            description:
-              "A progressive JavaScript framework for building user interfaces",
-          },
-          {
-            id: 4,
-            name: "Svelte",
-            description: "A compiler for building user interfaces",
-          },
-        ];
+        const [data, setData] = React.useState([]);
+
+        React.useEffect(() => {
+          console.log("React.useEffect()");
+
+          fetch("https://dummyjson.com/products")
+            .then((res) => res.json())
+            .then((data) => {
+              setData(data.products);
+            });
+        }, []);
 
         return (
-          <div className="flex flex-wrap gap-4">
-            {data.slice(0, limit < 0 ? 0 : limit).map((currentObj) => {
-              return (
-                <div
-                  key={currentObj.id}
-                  className="border border-zinc-800 rounded-lg p-4 w-48"
-                >
-                  <h2 className="text-2xl font-bold mb-2">{currentObj.name}</h2>
-                  <p>{currentObj.description}</p>
-                </div>
-              );
-            })}
-          </div>
+          <React.Fragment>
+            <div className="flex flex-wrap gap-4">
+              {data.slice(0, limit < 0 ? 0 : limit).map((currentObj) => {
+                return (
+                  <div
+                    key={currentObj.id}
+                    className="border border-zinc-800 rounded-lg p-4 w-48"
+                  >
+                    <h2 className="text-2xl font-bold mb-2">
+                      {currentObj.title}
+                    </h2>
+                    <p>{currentObj.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </React.Fragment>
         );
       }
 

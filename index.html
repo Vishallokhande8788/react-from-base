@@ -33,7 +33,7 @@
       const rootEl = document.querySelector("#app");
       const root = ReactDOM.createRoot(rootEl);
 
-      function Header({ children, bgColor = "light" }) {
+      function Header({ children = "React from base", bgColor = "light" }) {
         const backgroundOptions = {
           light: "bg-zinc-200",
           blue: "bg-blue-200",
@@ -134,6 +134,7 @@
 
       function Main() {
         const [size, setSize] = React.useState(0);
+        const [color, setColor] = React.useState("#ffffff");
 
         function handleChange(value) {
           setSize(value);
@@ -149,19 +150,40 @@
                 package.json
               </code>
             </p>
-            <Counter handleChange={handleChange} bgColor="#000000" />
+            <Counter handleChange={handleChange} bgColor={color} />
 
-            <input type="color" className="border" />
+            <input
+              type="color"
+              className="border"
+              onChange={(e) => setColor(e.target.value)}
+              value={color}
+            />
 
             <Grid limit={size} />
           </main>
         );
       }
 
+      function Page() {
+        return (
+          <div>
+            <Header bgColor="green"></Header>
+            <label htmlFor="title">Enter a title:</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              placeholder="Enter a title"
+              className="border border-stone-400"
+            />
+            <Main />
+          </div>
+        );
+      }
+
       root.render(
         <React.StrictMode>
-          <Header bgColor="green">React From Base</Header>
-          <Main />
+          <Page />
         </React.StrictMode>
       );
     </script>

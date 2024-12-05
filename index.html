@@ -33,7 +33,7 @@
       const rootEl = document.querySelector("#app");
       const root = ReactDOM.createRoot(rootEl);
 
-      function Header({ children, bgColor = "light" }) {
+      function Header({ children = "React from base", bgColor = "light" }) {
         const backgroundOptions = {
           light: "bg-zinc-200",
           blue: "bg-blue-200",
@@ -45,9 +45,7 @@
           <header
             className={`${backgroundOptions[bgColor]} px-8 py-6 border-b`}
           >
-            <h1 className="text-2xl font-semibold">
-              {children || "React from base"}
-            </h1>
+            <h1 className="text-2xl font-semibold">{children}</h1>
           </header>
         );
       }
@@ -56,17 +54,26 @@
         let [counter, setCounter] = React.useState(0);
 
         function handleClick(operation = "+") {
-          setCounter((preValue) => {
-            let newValue = operation === "+" ? preValue + 1 : preValue - 1;
-            handleChange(newValue);
-            return newValue;
+          if (operation === "+") {
+            setCounter((prevValue) => {
+              handleChange(prevValue + 1);
+              return prevValue + 1;
+            });
+
+            return;
+          }
+
+          setCounter((prevValue) => {
+            handleChange(prevValue - 1);
+            return prevValue - 1;
           });
         }
 
         return (
           <React.Fragment>
             <div
-              className={`flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3 bg-[${bgColor}]`}
+              className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3"
+              style={{ backgroundColor: bgColor }}
             >
               <button
                 className="bg-blue-300 rounded-sm"
@@ -87,50 +94,79 @@
         );
       }
 
-      function Grid({ limit = 1 }) {
+      function Grid({ limit = 10 }) {
         const [data, setData] = React.useState([]);
+        const [currentPage, setCurrentPage] = React.useState(1);
+        const itemsPerPage = limit; // Set items to display per page
 
         React.useEffect(() => {
-          console.log("React.useEffect()");
-
           fetch(
-            "https://cdn.jsdelivr.net/gh/gliese-sketch/bbt-cars-inventory@refs/heads/main/src/data.json"
+            "https://cdn.jsdelivr.net/gh/shantanuuchak/pokespoke@main/src/js/data.json"
           )
             .then((res) => res.json())
-            .then((data) => {
-              setData(data);
-            });
+            .then((data) => setData(data));
         }, []);
 
-        return (
-          <React.Fragment>
-            <div className="flex flex-wrap gap-4">
-              {data.slice(0, limit < 0 ? 0 : limit).map((currentObj) => {
-                const price = currentObj.price;
-                const priceFormat = price.toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                });
+        // Calculate indices for slicing the data array
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-                return (
-                  <div
-                    key={currentObj.id}
-                    className="bg-stone-100 rounded-lg p-4 w-48 flex flex-col justify-between border border-stone-300"
-                  >
-                    <h2 className="text-xl font-bold mb-2">
-                      {currentObj.name}
-                    </h2>
-                    <p>{priceFormat}</p>
-                    <img
-                      src={currentObj.img}
-                      alt={currentObj.name}
-                      className="rounded"
-                    />
-                  </div>
-                );
-              })}
+        // Calculate total pages
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+
+        const handleNext = () => {
+          if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+          }
+        };
+
+        const handlePrev = () => {
+          if (currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1);
+          }
+        };
+
+        return (
+          <div>
+            <div className="flex flex-wrap gap-4">
+              {currentItems.map((currentObj) => (
+                <div
+                  key={currentObj.id}
+                  className="border border-zinc-800 rounded-lg p-4 w-52"
+                >
+                  <h2 className="text-2xl font-bold mb-2">{currentObj.name}</h2>
+                  <p>{currentObj.description}</p>
+                  <img
+                    src={currentObj.image}
+                    width="100"
+                    height="100"
+                    alt={currentObj.name}
+                  />
+                </div>
+              ))}
             </div>
-          </React.Fragment>
+
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={handlePrev}
+                disabled={currentPage === 1}
+                className="bg-blue-300 p-2 rounded"
+              >
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="bg-blue-300 p-2 rounded"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         );
       }
 
@@ -143,7 +179,7 @@
         }
 
         return (
-          <main className="px-8 py-6 container">
+          <main className="px-8 py-6 container min-h-screen">
             <h2 className="text-xl font-bold mb-3">Why? 🤔</h2>
             <p className="mb-5">
               React from base is a project that uses React without any other
@@ -153,21 +189,18 @@
               </code>
             </p>
             <Counter handleChange={handleChange} bgColor={color} />
-
             <input
               type="color"
-              className="border"
-              onChange={(e) => setColor(e.target.value)}
               value={color}
+              onChange={(e) => setColor(e.target.value)}
             />
-
             <Grid limit={size} />
           </main>
         );
       }
 
       function Page() {
-        const [title, setTitle] = React.useState();
+        const [value, setValue] = React.useState(value);
         const reference = React.useRef(null);
 
         React.useEffect(() => {
@@ -178,19 +211,17 @@
 
         return (
           <div>
-            <Header bgColor="green">{title}</Header>
-            <section className="px-8 py-6">
-              <label htmlFor="title">Enter a title:</label>
+            <Header bgColor="green">{value}</Header>
+            <section className="mx-8 py-5">
+              <label htmlFor="title">Enter the title:</label>
               <input
                 type="text"
-                name="title"
+                name="text"
                 id="title"
-                placeholder="Enter a title"
-                className="border border-stone-400"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
+                placeholder="Enter title"
+                className="ml-3 border p-1 rounded"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
                 ref={reference}
               />
             </section>

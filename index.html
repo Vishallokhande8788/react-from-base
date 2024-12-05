@@ -50,7 +50,7 @@
         );
       }
 
-      function Counter({ handleChange }) {
+      function Counter({ handleChange, bgColor }) {
         let [counter, setCounter] = React.useState(0);
 
         function handleClick(operation = "+") {
@@ -63,7 +63,9 @@
 
         return (
           <React.Fragment>
-            <div className="flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3">
+            <div
+              className={`flex text-6xl border border-zinc-600 w-fit p-2 gap-3 rounded-lg mb-3 bg-[${bgColor}]`}
+            >
               <button
                 className="bg-blue-300 rounded-sm"
                 onClick={() => handleClick("-")}
@@ -89,10 +91,12 @@
         React.useEffect(() => {
           console.log("React.useEffect()");
 
-          fetch("https://dummyjson.com/products")
+          fetch(
+            "https://cdn.jsdelivr.net/gh/gliese-sketch/bbt-cars-inventory@refs/heads/main/src/data.json"
+          )
             .then((res) => res.json())
             .then((data) => {
-              setData(data.products);
+              setData(data);
             });
         }, []);
 
@@ -100,15 +104,26 @@
           <React.Fragment>
             <div className="flex flex-wrap gap-4">
               {data.slice(0, limit < 0 ? 0 : limit).map((currentObj) => {
+                const price = currentObj.price;
+                const priceFormat = price.toLocaleString("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                });
+
                 return (
                   <div
                     key={currentObj.id}
-                    className="border border-zinc-800 rounded-lg p-4 w-48"
+                    className="bg-stone-100 rounded-lg p-4 w-48 flex flex-col justify-between border border-stone-300"
                   >
-                    <h2 className="text-2xl font-bold mb-2">
-                      {currentObj.title}
+                    <h2 className="text-xl font-bold mb-2">
+                      {currentObj.name}
                     </h2>
-                    <p>{currentObj.description}</p>
+                    <p>{priceFormat}</p>
+                    <img
+                      src={currentObj.img}
+                      alt={currentObj.name}
+                      className="rounded"
+                    />
                   </div>
                 );
               })}
@@ -134,7 +149,10 @@
                 package.json
               </code>
             </p>
-            <Counter handleChange={handleChange} />
+            <Counter handleChange={handleChange} bgColor="#000000" />
+
+            <input type="color" className="border" />
+
             <Grid limit={size} />
           </main>
         );

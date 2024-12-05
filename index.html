@@ -33,7 +33,7 @@
       const rootEl = document.querySelector("#app");
       const root = ReactDOM.createRoot(rootEl);
 
-      function Header({ children = "React from base", bgColor = "light" }) {
+      function Header({ children, bgColor = "light" }) {
         const backgroundOptions = {
           light: "bg-zinc-200",
           blue: "bg-blue-200",
@@ -45,7 +45,9 @@
           <header
             className={`${backgroundOptions[bgColor]} px-8 py-6 border-b`}
           >
-            <h1 className="text-2xl font-semibold">{children}</h1>
+            <h1 className="text-2xl font-semibold">
+              {children || "React from base"}
+            </h1>
           </header>
         );
       }
@@ -165,17 +167,33 @@
       }
 
       function Page() {
+        const [title, setTitle] = React.useState();
+        const reference = React.useRef(null);
+
+        React.useEffect(() => {
+          if (reference.current) {
+            reference.current.focus();
+          }
+        }, []);
+
         return (
           <div>
-            <Header bgColor="green"></Header>
-            <label htmlFor="title">Enter a title:</label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              placeholder="Enter a title"
-              className="border border-stone-400"
-            />
+            <Header bgColor="green">{title}</Header>
+            <section className="px-8 py-6">
+              <label htmlFor="title">Enter a title:</label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Enter a title"
+                className="border border-stone-400"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+                ref={reference}
+              />
+            </section>
             <Main />
           </div>
         );
